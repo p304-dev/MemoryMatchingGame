@@ -22,7 +22,26 @@ let lockBoard = false;
 
 */
 function initGame() {
-    // Write your code here
+    // reset state
+    cards = []
+    resetBoard()
+
+    const gameBoard = document.getElementById('game-board');
+    gameBoard.innerHTML = '';
+
+    for (let symbol of symbols){
+        cards.push(symbol);
+        cards.push(symbol);
+    }
+
+    shuffleArray(cards);
+
+    for (let symbol of cards){
+        const card = createCard(symbol);
+        gameBoard.appendChild(card);
+    }
+
+
 
     document.getElementById('restart-btn').addEventListener('click', initGame);
 }
@@ -34,7 +53,16 @@ function initGame() {
     Also make sure to add the event listener with the 'flipCard' function
 */
 function createCard(symbol) {
-    // Write your code here
+    // Create the card element
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.dataset.symbol = symbol;
+
+    card.addEventListener('click', function () {
+        flipCard(card);
+    });
+    return card;
+
 }
 
 /*
@@ -49,6 +77,18 @@ function flipCard(card) {
     // If the board is supposed to be locked or you picked the same card you already picked
     if (lockBoard || card === firstCard) return;
     // Write your code here
+
+
+    if(!firstCard){
+        firstCard = card
+        card.classList.add('flipped')
+        card.textContent = card.dataset.symbol
+    } else {
+        secondCard = card
+        card.classList.add('flipped')
+        card.textContent = card.dataset.symbol
+        checkForMatch()
+    }
 }
 
 /* 
@@ -58,6 +98,14 @@ function flipCard(card) {
 */
 function checkForMatch() {
     // Write your code here
+
+    if(firstCard.textContent == secondCard.textContent){
+        disableCards()
+        firstCard = null
+        secondCard = null
+    } else{
+        unflipCards()
+    }
 }
 
 /* 
@@ -67,6 +115,9 @@ function checkForMatch() {
 */
 function disableCards() {
     // Write your code here
+    firstCard.classList.add("matched")
+    secondCard.classList.add("matched")
+    resetBoard()
 }
  
 /* ---------------------  Everything under has already been done for you -------------------------- */
